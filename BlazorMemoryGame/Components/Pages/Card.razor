@@ -1,5 +1,54 @@
-﻿<h3>Card</h3>
+﻿@using Models
+
+<h3>Card</h3>
+
+<div>
+    <div>
+        @foreach (CardModel memory in cards)
+        {
+            @if (memory.IsBack)
+            {
+                <div style="height: 50px; width: 30px"
+                     class="bg-black border"
+                     @onclick="(() => ChangeCard(memory))">
+                    @memory.Front
+                </div>
+            } else
+            {
+                <div style="height: 50px; width: 30px"
+                     class="bg-black border"
+                     @onclick="(() => ChangeCard(memory))">
+                    @memory.Back
+                </div>
+            }
+
+        }
+    </div>
+
+</div>
 
 @code {
+    public List<CardModel> cards = new List<CardModel>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        CardModel card = new CardModel
+            {
+                Back = "hi",
+                Front = "bye",
+                FrontId = 1,
+                IsBack = false
+
+            };
+
+        cards.Add(card);
+    }
+
+    protected void ChangeCard( CardModel card)
+    {
+        card.IsBack = !card.IsBack;
+    }
+
+    
 
 }
