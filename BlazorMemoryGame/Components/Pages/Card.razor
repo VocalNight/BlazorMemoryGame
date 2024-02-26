@@ -6,7 +6,7 @@
     <div>
         @foreach (CardModel memory in cards)
         {
-            @if (memory.IsBack)
+            @if (!memory.IsBack)
             {
                 <div style="height: 50px; width: 30px"
                      class="bg-black border"
@@ -16,8 +16,7 @@
             } else
             {
                 <div style="height: 50px; width: 30px"
-                     class="bg-black border"
-                     @onclick="(() => ChangeCard(memory))">
+                     class="bg-black border">
                     @memory.Back
                 </div>
             }
@@ -29,6 +28,7 @@
 
 @code {
     public List<CardModel> cards = new List<CardModel>();
+    private CardModel? currentCard = null;
 
     protected override async Task OnInitializedAsync()
     {
@@ -41,14 +41,54 @@
 
             };
 
+        CardModel card2 = new CardModel
+            {
+                Back = "hi",
+                Front = "bye",
+                FrontId = 1,
+                IsBack = false
+
+            };
+
+        CardModel card3 = new CardModel
+            {
+                Back = "hi",
+                Front = "bye",
+                FrontId = 2,
+                IsBack = false
+
+            };
+
         cards.Add(card);
+        cards.Add(card2);
+        cards.Add(card3);
     }
 
     protected void ChangeCard( CardModel card)
     {
         card.IsBack = !card.IsBack;
+
+        foreach(var mem in cards)
+        {
+            Console.WriteLine(mem.IsBack);
+        }
+
+        CheckCards(card);
     }
 
-    
+    protected void CheckCards( CardModel card )
+    {
+        if (currentCard == null)
+        {
+            currentCard = card;
+            return;
+        }
 
+        if (!(currentCard?.FrontId == card.FrontId))
+        {
+            currentCard.IsBack = false;
+            card.IsBack = false;
+        }
+        currentCard = null;
+    }
 }
